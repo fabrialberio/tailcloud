@@ -2,12 +2,12 @@
   <img src="https://raw.githubusercontent.com/fabrialberio/tailcloud/c8997b6b68ed5072a550cfbe3434fb335e94b12a/icon.svg">
 </div>
 
-## Tailcloud
+# Tailcloud
 Performance-optimized Nextcloud and Tailscale in a single docker-compose file.
 
 Inspired by [this post](https://github.com/nextcloud/all-in-one/discussions/5439).
 
-### Setup
+## Setup
 1. [Install Docker](https://docs.docker.com/engine/install/);
 2. [get a Tailscale client key](https://tailscale.com/kb/1623/trust-credentials) with scope "All - Read & Write";
 3. [download the files](https://github.com/fabrialberio/tailcloud/archive/refs/heads/main.zip) or use Git to clone this repository:
@@ -39,7 +39,7 @@ docker compose up -d
 ```
 9. you will now be able to access your Nextcloud instance at the URL configured in `.env`.
 
-### Performance optimizations
+## Performance optimizations
 Before trying further performance optimizations, test your Nextcloud instance with the default settings and read the [Nextcloud server tuning documentation](https://docs.nextcloud.com/server/stable/admin_manual/installation/server_tuning.html).
 
 **DO NOT** report issues to Nextcloud if you are not using the default PHP settings.
