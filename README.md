@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/fabrialberio/tailcloud/c8997b6b68ed5072a550cfbe3434fb335e94b12a/icon.svg">
+</div>
+
 ## Tailcloud
 Performance-optimized Nextcloud and Tailscale in a single docker-compose file.
 
