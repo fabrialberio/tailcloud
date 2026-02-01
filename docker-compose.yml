@@ -1,0 +1,104 @@
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data:Z
+    env_file:
+      - .env
+    networks:
+      - nextcloud
+
+  redis:
+    image: redis:alpine
+    restart: always
+    mem_reservation: 1000m
+    networks:
+      - nextcloud
+
+  nextcloud:
+    image: nextcloud:32.0.5-fpm
+    restart: always
+    mem_reservation: 2000m
+    environment:
+      - POSTGRES_HOST=db
+      - REDIS_HOST=redis
+    env_file:
+      .env
+    networks:
+      - nextcloud
+    volumes:
+      - nextcloud:/var/www/html:z
+      
+      # Uncomment the following line after Nextcloud is initialized to use custom config.
+      #- ./config.php:/var/www/html/config/custom.config.php
+
+      # Uncomment the following line to overwrite PHP-FPM optimization settings.
+      #- ./php-fpm.conf:/usr/local/etc/php-fpm.d/zz-custom.conf
+      
+      # Uncomment the following line to overwrite recommended PHP OPcache settings.
+	    # Only report issues to Nextcloud if you are using the default PHP settings!
+      #- ./opcache.ini:/usr/local/etc/php/conf.d/opcache-recommended.ini
+    depends_on:
+      - db
+      - redis
+      
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    environment:
+      - TS_HOSTNAME=$TS_HOSTNAME
+      - TS_TAILNET=$TS_TAILNET
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_certs:/certs
+      - caddy_data:/data
+      - caddy_config:/config
+      - tailscale_sock:/var/run/tailscale/:ro
+      - nextcloud:/var/www/html:z,ro
+    network_mode: service:tailscale
+
+  tailscale:
+    image: tailscale/tailscale:stable
+    environment:
+      TS_HOSTNAME: $TS_HOSTNAME
+      TS_EXTRA_ARGS: --advertise-tags=tag:$TS_HOSTNAME
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - nextcloud
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+      - tailscale:/var/lib/tailscale
+      - tailscale_sock:/tmp
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+  cron:
+    image: nextcloud:32.0.5-fpm
+    restart: always
+    volumes_from:
+      - nextcloud
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+
+networks:
+  nextcloud:
+    driver: bridge
+    enable_ipv6: false
+    driver_opts:
+      com.docker.network.driver.mtu: "9001"
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+
+volumes:
+  db:
+  nextcloud:
+  caddy_certs:
+  caddy_data:
+  caddy_config:
+  tailscale:
+  tailscale_sock:
