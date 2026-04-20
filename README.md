@@ -32,7 +32,7 @@ NEXTCLOUD_ADMIN_PASSWORD=Another-Difficult-Password
 docker compose up
 ```
 6. after all services initialize, your Nextcloud server will show up in the Tailscale dashboard, but you will not be able to access it yet because it has no trusted domains configured;
-7. stop all the services with Ctrl+C and uncomment [this line](https://github.com/fabrialberio/tailcloud/blob/6db5d0759db80c5791fd0a02661a3581cab2bb61/docker-compose.yml#L34) in `docker-compose.yml` (this has to be done after the first initialization to avoid [this error](help.nextcloud.com/t/configuration-was-not-read-or-initialized-correctly/152414));
+7. stop all the services with Ctrl+C and uncomment [this line](https://github.com/fabrialberio/tailcloud/blob/6db5d0759db80c5791fd0a02661a3581cab2bb61/docker-compose.yml#L34) in `docker-compose.yml` (this has to be done after the first initialization to avoid [this error](https://help.nextcloud.com/t/configuration-was-not-read-or-initialized-correctly/152414));
 8. start all the services again:
 ```
 docker compose up -d
